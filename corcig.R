@@ -8,21 +8,19 @@ critical.r <- function(n, alpha=0.05) {
   #' @param alpha the level of significance of the t test
   
   df <- n - 2
-  critical.t <- qt(1 - (alpha/2), df)
-  critical.r <- sqrt((critical.t^2) / ((critical.t^2) + df))
+  critical.t <- qt(alpha/2, df, lower.tail = F)
+  critical.r <- sqrt( (critical.t^2) / ( (critical.t^2) + df ) )
   return(critical.r)
 }
 
-cor2cig <- function (S, varnames=NULL, alpha=0.05) {
+cor2cig <- function (S, crit.r) {
   #' Generate a CIG from a covariance matrix
   #'
   #' @param S a sample covariance matrix
-  #' @param alpha the level of significance of the t test
   
   # build partial correlation matrix
-  parcor.mat = corpcor::cor2pcor(S)
-  # get significance theshold
-  crit.r = critical.r(nrow(S), alpha=alpha)
+  pcor.mat = corpcor::cor2pcor(S)
+  pcor.mat[upper.tri(pcor.mat, diag=TRUE)] <- 0
   # build variable name dictionary
   var_dict <- as.list(c(colnames(S)))
   names(var_dict) <- c(1:nrow(pcor.mat))
