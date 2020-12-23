@@ -38,3 +38,5 @@ cor2cig <- function (S, crit.r) {
   g <- igraph::graph_from_edgelist(el, directed=FALSE)
   return(g)
 }
+
+# TODO: add cig2dag function, given time series CIG and list of variables at time t
