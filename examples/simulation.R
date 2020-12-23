@@ -1,6 +1,5 @@
 source("corcig.R")
 library("vars")
-
 set.seed(234)
 
 # ------------------
@@ -85,5 +84,3 @@ g <- cor2cig(S, crit.r)
 
 # plot full CIG (not just links to variables at time t)
 plot(g, layout=layout_with_kk, label.cex=.25, label.dist=10)
-
-# TODO: 
