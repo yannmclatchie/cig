@@ -1,3 +1,6 @@
+require(corpcor)
+require(igraph)
+
 critical.r <- function(n, alpha=0.05) {
   #' Calculate the critical correlation coefficient to determin significance
   #'
