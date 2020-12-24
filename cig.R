@@ -1,8 +1,8 @@
 require(corpcor)
 require(igraph)
 
-critical.r <- function(n, alpha=0.05) {
-  #' Calculate the critical correlation coefficient to determin significance
+critical_r <- function(n, alpha=0.05) {
+  #' Calculate the critical correlation coefficient to determine significance
   #'
   #' @param n the number of data observations
   #' @param alpha the level of significance of the t test
@@ -13,11 +13,20 @@ critical.r <- function(n, alpha=0.05) {
   return(critical.r)
 }
 
-cor2cig <- function (S, crit.r) {
-  #' Generate a CIG from a covariance matrix
+get_cig <- function (X, alpha) {
+  #' Generate a CIG from a time series sample
   #'
-  #' @param S a sample covariance matrix
+  #' @param X time series data
+  #' @param alpha the level of significance of the t test
+  #' 
+  #' @return graph : the CIG 
+  #' @return mat : the partial correlation matrix
+  #' @return r: the critical correlation coefficient 
   
+  # estimate the covariance matrix
+  S = cov(X)
+  # get significance theshold
+  crit.r = critical_r(nrow(X), alpha)
   # build partial correlation matrix
   pcor.mat = corpcor::cor2pcor(S)
   pcor.mat[upper.tri(pcor.mat, diag=TRUE)] <- 0
@@ -34,7 +43,8 @@ cor2cig <- function (S, crit.r) {
       }
     }
   }
+  diag(pcor.mat) <- 1
   # build CIG from partial correlation matrix
   g <- igraph::graph_from_edgelist(el, directed=FALSE)
-  return(g)
+  return(list("graph"=g, "mat"=pcor.mat, "r"=crit.r))
 }

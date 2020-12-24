@@ -1,5 +1,4 @@
-source("corcig.R")
-library("vars")
+source("../cig.R")
 
 set.seed(234)
 
@@ -49,16 +48,6 @@ plot.ts(
 )
 legend("topleft",c("y.t","x.t"),cex=.8,col=c("red","black"), pch=c(16,16))
 
-# Estimate VAR(2)
-var_est <- VAR(series, p = 2, type = "none")
-var_est
-
-# Estimate SVAR(2)
-B <- diag(1, 2)
-B[lower.tri(B)] <- NA
-svar_est <- SVAR(var_est, Bmat = B, max.iter = 1000)
-solve(svar_est$B)
-
 # Build design matrix
 X.t = cbind(series[,"y"], series[,"x"])
 X = X.t
@@ -69,21 +58,15 @@ for (i in 1:3) {
 colnames(X) <- c("y.t", "x.t", "y.t1", "x.t1", "y.t2", "x.t2", "y.t3", "x.t3")
 X <- X[complete.cases(X),]
 
-# Check lagged variables
-tail(X)
-
 # ------------------
 # 2. Calculating CIG
 # ------------------
 
-# estimate the covariance matrix
-S = cov(X)
-# get significance theshold
-crit.r = critical.r(nrow(X), alpha=0.05)
-# build CIG from covariance matrix
-g <- cor2cig(S, crit.r)
+# build CIG
+cig <- get_cig(X, 0.05)
 
-# plot full CIG (not just links to variables at time t)
-plot(g, layout=layout_with_kk, label.cex=.25, label.dist=10)
-
-# TODO: 
+# plot full CIG
+plot(cig$graph, layout=layout_with_kk, label.cex=.25, label.dist=10)
+# extract partial correlation matrix and critical correlation coefficient
+View(cig$mat)
+print(cig$r)
