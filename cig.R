@@ -48,3 +48,5 @@ get_cig <- function (X, alpha) {
   g <- igraph::graph_from_edgelist(el, directed=FALSE)
   return(list("graph"=g, "mat"=pcor.mat, "r"=crit.r))
 }
+
+# TODO: add cig2dag function, given time series CIG and list of variables at time t
